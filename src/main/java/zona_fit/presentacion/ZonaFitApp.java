@@ -43,16 +43,20 @@ public class ZonaFitApp {
 
     private static boolean ejecutarOpciones(Scanner consola, int opcion, IClienteDAO clienteDao) {
         var salir = false;
-        switch (opcion){
+        switch (opcion){ // Hermoso pla pla
             // llamada metodo listarClientes de clase ClienteDAO.
             case 1 -> listarClientes(clienteDao);
             // Llamada al metodo buscar por ID.
             case 2 -> buscarClientePorId(consola, clienteDao);
             // Agregar cliente
             case 3 -> agregarCliente(consola, clienteDao);
+            // Modificar cliente
+            case 4 -> modificarCliente(consola, clienteDao);
         }
         return salir;
     }
+
+
 
     // Listar clientes
     private static void listarClientes(IClienteDAO clienteDao){
@@ -114,6 +118,29 @@ public class ZonaFitApp {
         }
     }
 
+    // Modificar cliente
+    private static void modificarCliente(Scanner consola, IClienteDAO clienteDao){
+        System.out.println("*** Ingrese las modificaciones al cliente ***");
+
+        int idCli = leerEnteroPositivo(consola, "ID Cliente: ");
+        String nuevoNombreCli = leerTextoValido(consola, "Nombre: ");
+        String nuevoApellidoCli = leerTextoValido(consola, "Apellido: ");
+        int nuevoMembresiaCli = leerEnteroPositivo(consola, "Membresía: ");
+
+        // Creo una nueva instancia(Nuevo Objeto) de la clase cliente(plantilla)
+        var modificarCliente = new Cliente(idCli, nuevoNombreCli, nuevoApellidoCli, nuevoMembresiaCli);
+        // Es como decir:
+        //“Toma este cliente con ID 5, cambiale el nombre, apellido y membresía, y dime si lo pudiste modificar correctamente”.
+        var modificado = clienteDao.modificarCliente(modificarCliente);
+
+        if (modificado){
+            System.out.println("Cliente modificado: " + modificarCliente);
+        } else {
+            System.out.println("Error al modificar el cliente: " + modificarCliente);
+        }
+
+    }
+
 
 
 
@@ -129,7 +156,7 @@ public class ZonaFitApp {
                 continue;
             }
 
-            // Validamos que no sea un número (int o float)
+            // Validamos que no sea un numero (int o float)
             if (texto.matches("\\d+(\\.\\d+)?")) {
                 System.out.println("El valor no puede ser un número. Intenta con un nombre.");
                 continue;
