@@ -5,7 +5,7 @@ import zona_fit.datos.IClienteDAO;
 import zona_fit.dominio.Cliente;
 
 import java.util.Scanner;
-
+// Este es mi codigo refactorizado.
 public class ZonaFitApp {
     public static void main(String[] args) {
         zonaFitApp();
@@ -52,6 +52,14 @@ public class ZonaFitApp {
             case 3 -> agregarCliente(consola, clienteDao);
             // Modificar cliente
             case 4 -> modificarCliente(consola, clienteDao);
+            // Eliminar cliente
+            case 5 -> eliminarCliente(consola, clienteDao);
+            // Salir del sistema
+            case 6 -> {
+                salirDelSistema();
+                salir = true;
+            }
+            default -> opcionInvalida();
         }
         return salir;
     }
@@ -140,6 +148,45 @@ public class ZonaFitApp {
         }
 
     }
+
+    // Eliminar cliente
+    private static void eliminarCliente(Scanner consola, IClienteDAO clienteDao){
+        System.out.println("\n--- Listar Clientes ---");
+        var clientes = clienteDao.listarClientes();
+        clientes.forEach(System.out::println);
+
+        int cantidad = leerEnteroPositivo(consola, "\n¿Cuántos clientes desea eliminar? ");
+
+        for (int i = 0; i < cantidad; i++) {
+            int idCli = leerEnteroPositivo(consola, "Ingrese el ID del cliente a eliminar: ");
+            var clienteEliminar = new Cliente(idCli);
+
+            try {
+                boolean eliminado = clienteDao.eliminarCliente(clienteEliminar);
+                if (eliminado) {
+                    System.out.println("✅ Cliente eliminado: " + clienteEliminar);
+                } else {
+                    System.out.println("❌ No se encontró cliente con ID: " + idCli);
+                }
+            } catch (Exception e) {
+                System.out.println("⚠️ Error al eliminar cliente: " + e.getMessage());
+            }
+        }
+
+
+    }
+
+    // Salir del sistema
+    private static void salirDelSistema() {
+        System.out.println("\n✅ Saliendo del sistema. ¡Hasta luego!");
+    }
+
+    // Opcion invalida
+    private static void opcionInvalida() {
+        System.out.println("\n❌ Opción inválida. Intenta de nuevo.");
+    }
+
+
 
 
 
